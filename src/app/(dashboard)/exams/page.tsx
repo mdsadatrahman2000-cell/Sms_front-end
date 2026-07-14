@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { examsApi } from "@/lib/api"
 import { Plus, Eye, Trash2 } from "lucide-react"
+import Link from "next/link"
 
 export default function ExamsPage() {
   const [exams, setExams] = React.useState<any[]>([])
@@ -45,7 +46,7 @@ export default function ExamsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Examinations</h1>
           <p className="text-muted-foreground">Manage exams, quizzes, and assessments</p>
         </div>
-        <Button><Plus className="h-4 w-4 mr-2" /> New Exam</Button>
+        <Link href="/exams/new"><Button><Plus className="h-4 w-4 mr-2" /> New Exam</Button></Link>
       </div>
 
       <Card>

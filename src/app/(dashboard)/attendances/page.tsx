@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { attendancesApi, classesApi } from "@/lib/api"
-import { Check, X, Clock, Search } from "lucide-react"
+import { Check, X, Clock, Search, Plus } from "lucide-react"
+import Link from "next/link"
 
 export default function AttendancesPage() {
   const [records, setRecords] = React.useState<any[]>([])
@@ -47,9 +48,12 @@ export default function AttendancesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Attendance</h1>
-        <p className="text-muted-foreground">Track and manage student attendance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Attendance</h1>
+          <p className="text-muted-foreground">Track and manage student attendance</p>
+        </div>
+        <Link href="/attendances/new"><Button><Plus className="h-4 w-4 mr-2" /> Mark Attendance</Button></Link>
       </div>
 
       <Card>
