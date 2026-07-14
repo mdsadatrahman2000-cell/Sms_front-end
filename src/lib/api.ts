@@ -173,3 +173,44 @@ export const guardiansApi = {
   unlinkStudent: (guardianId: string, studentId: string) =>
     request(`/guardians/${guardianId}/unlink/${studentId}`, { method: "DELETE" }),
 };
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://sms-back-end-cd36.onrender.com/api/v1";
+
+export const uploadApi = {
+  upload: async (file: File, entityType: string, entityId?: string, category?: string, description?: string) => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("entityType", entityType);
+    if (entityId) formData.append("entityId", entityId);
+    if (category) formData.append("category", category);
+    if (description) formData.append("description", description);
+
+    const response = await fetch(`${API_BASE}/upload`, {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      return { error: data.message || "Upload failed" };
+    }
+
+    return { data: await response.json() };
+  },
+
+  list: (params?: { entityType?: string; entityId?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.entityType) searchParams.set("entityType", params.entityType);
+    if (params?.entityId) searchParams.set("entityId", params.entityId);
+    return request<any[]>(`/upload?${searchParams.toString()}`);
+  },
+
+  download: (id: string) => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    return `${API_BASE}/upload/${id}/download${token ? `?token=${token}` : ""}`;
+  },
+
+  delete: (id: string) => request(`/upload/${id}`, { method: "DELETE" }),
+};

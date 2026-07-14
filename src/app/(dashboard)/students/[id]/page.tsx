@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { studentsApi } from "@/lib/api"
+import { FileUpload } from "@/components/file-upload"
 
 interface Student {
   id: string
@@ -205,6 +206,8 @@ export default function StudentDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      <FileUpload entityType="student" entityId={student.id} category="documents" />
     </div>
   )
 }
