@@ -232,3 +232,85 @@ export const rolesApi = {
     request(`/roles/${id}`, { method: "DELETE" }),
   permissions: () => request<any>("/roles/permissions"),
 };
+
+export const attendancesApi = {
+  list: (params?: { page?: number; classId?: string; date?: string; studentId?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.page) p.set("page", String(params.page));
+    if (params?.classId) p.set("classId", params.classId);
+    if (params?.date) p.set("date", params.date);
+    if (params?.studentId) p.set("studentId", params.studentId);
+    return request<{ records: any[]; total: number; page: number; totalPages: number }>(`/attendances?${p.toString()}`);
+  },
+  create: (data: any) => request<any>("/attendances", { method: "POST", body: JSON.stringify(data) }),
+  bulkCreate: (data: any) => request<any>("/attendances/bulk", { method: "POST", body: JSON.stringify(data) }),
+  getByStudent: (studentId: string, month?: string) => {
+    const p = month ? `?month=${month}` : "";
+    return request<any[]>(`/attendances/student/${studentId}${p}`);
+  },
+  getByClass: (classId: string, date: string) =>
+    request<any[]>(`/attendances/class/${classId}?date=${date}`),
+  getSummary: (classId: string, month: string) =>
+    request<any[]>(`/attendances/summary/${classId}?month=${month}`),
+};
+
+export const examsApi = {
+  list: (params?: { classId?: string; subjectId?: string; type?: string; status?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.classId) p.set("classId", params.classId);
+    if (params?.subjectId) p.set("subjectId", params.subjectId);
+    if (params?.type) p.set("type", params.type);
+    if (params?.status) p.set("status", params.status);
+    return request<{ exams: any[]; total: number }>(`/exams?${p.toString()}`);
+  },
+  get: (id: string) => request<any>(`/exams/${id}`),
+  create: (data: any) => request<any>("/exams", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) => request<any>(`/exams/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) => request(`/exams/${id}`, { method: "DELETE" }),
+  submitMarks: (examId: string, data: any) =>
+    request<any>(`/exams/${examId}/marks`, { method: "POST", body: JSON.stringify(data) }),
+  getResults: (examId: string) => request<any>(`/exams/${examId}/results`),
+};
+
+export const feesApi = {
+  structures: (classId?: string) => {
+    const p = classId ? `?classId=${classId}` : "";
+    return request<any[]>(`/fees/structures${p}`);
+  },
+  createStructure: (data: any) =>
+    request<any>("/fees/structures", { method: "POST", body: JSON.stringify(data) }),
+  invoices: (params?: { studentId?: string; status?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.studentId) p.set("studentId", params.studentId);
+    if (params?.status) p.set("status", params.status);
+    return request<any[]>(`/fees/invoices?${p.toString()}`);
+  },
+  createInvoice: (data: any) =>
+    request<any>("/fees/invoices", { method: "POST", body: JSON.stringify(data) }),
+  recordPayment: (data: any) =>
+    request<any>("/fees/payments", { method: "POST", body: JSON.stringify(data) }),
+  revenue: () => request<{ collected: number; pending: number }>("/fees/revenue"),
+};
+
+export const hrApi = {
+  list: (params?: { page?: number; department?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.page) p.set("page", String(params.page));
+    if (params?.department) p.set("department", params.department);
+    return request<{ teachers: any[]; total: number; page: number; totalPages: number }>(`/hr?${p.toString()}`);
+  },
+  get: (id: string) => request<any>(`/hr/${id}`),
+  payroll: (month: string) => request<any>(`/hr/payroll/summary?month=${month}`),
+};
+
+export const notificationsApi = {
+  list: () => request<any[]>("/notifications"),
+  unreadCount: () => request<{ count: number }>("/notifications/unread-count"),
+  markAsRead: (messageId: string) =>
+    request<any>(`/notifications/${messageId}/read`, { method: "POST" }),
+  notices: () => request<any[]>("/notifications/notices"),
+  createNotice: (data: any) =>
+    request<any>("/notifications/notices", { method: "POST", body: JSON.stringify(data) }),
+  deleteNotice: (id: string) =>
+    request(`/notifications/notices/${id}`, { method: "DELETE" }),
+};

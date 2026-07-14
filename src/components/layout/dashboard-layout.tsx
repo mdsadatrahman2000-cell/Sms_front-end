@@ -17,6 +17,13 @@ import {
   Menu,
   ChevronDown,
   School,
+  DollarSign,
+  Bus,
+  Building,
+  Package,
+  Megaphone,
+  Shield,
+  BarChart3,
 } from "lucide-react"
 import {
   Sidebar,
@@ -48,15 +55,32 @@ const navigation = [
     group: "Academic",
     items: [
       { label: "Academic Years", href: "/academic-years", icon: Calendar },
-      { label: "Attendance", href: "/attendance", icon: ClipboardList },
+      { label: "Attendance", href: "/attendances", icon: ClipboardList },
       { label: "Exams", href: "/exams", icon: ClipboardList },
-      { label: "Timetable", href: "/timetable", icon: Calendar },
+      { label: "Notices", href: "/notices", icon: Megaphone },
+    ],
+  },
+  {
+    group: "Finance",
+    items: [
+      { label: "Fees", href: "/fees", icon: DollarSign },
+    ],
+  },
+  {
+    group: "Operations",
+    items: [
+      { label: "HR & Staff", href: "/hr", icon: Users },
+      { label: "Library", href: "/library", icon: BookOpen },
+      { label: "Transport", href: "/transport", icon: Bus },
+      { label: "Hostel", href: "/hostel", icon: Building },
+      { label: "Inventory", href: "/inventory", icon: Package },
     ],
   },
   {
     group: "System",
     items: [
       { label: "Tenants", href: "/tenants", icon: School },
+      { label: "Roles", href: "/roles", icon: Shield },
       { label: "Settings", href: "/settings", icon: Settings },
     ],
   },
