@@ -57,6 +57,7 @@ const navigation = [
       { label: "Academic Years", href: "/academic-years", icon: Calendar },
       { label: "Attendance", href: "/attendances", icon: ClipboardList },
       { label: "Exams", href: "/exams", icon: ClipboardList },
+      { label: "LMS", href: "/lms", icon: BookOpen },
       { label: "Notices", href: "/notices", icon: Megaphone },
     ],
   },

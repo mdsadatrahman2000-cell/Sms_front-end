@@ -1,24 +1,91 @@
 "use client"
 
+import * as React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Package } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { inventoryApi } from "@/lib/api"
+import { Plus, Package, AlertTriangle } from "lucide-react"
 
 export default function InventoryPage() {
+  const [items, setItems] = React.useState<any[]>([])
+  const [lowStock, setLowStock] = React.useState<any[]>([])
+  const [search, setSearch] = React.useState("")
+  const [loading, setLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    Promise.all([inventoryApi.list(), inventoryApi.lowStock()]).then(([itemsRes, lowRes]) => {
+      if (itemsRes.data) setItems((itemsRes.data as any).items || [])
+      if (lowRes.data) setLowStock(lowRes.data as any[])
+      setLoading(false)
+    })
+  }, [])
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
-        <p className="text-muted-foreground">Manage school supplies and stock</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
+          <p className="text-muted-foreground">Manage school supplies and stock</p>
+        </div>
+        <Button><Plus className="h-4 w-4 mr-2" /> Add Item</Button>
       </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Items</CardTitle>
+            <Package className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent><div className="text-2xl font-bold">{items.length}</div></CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-red-500" />
+          </CardHeader>
+          <CardContent><div className="text-2xl font-bold text-red-600">{lowStock.length}</div></CardContent>
+        </Card>
+      </div>
+
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" /> Inventory Management
-          </CardTitle>
-          <CardDescription>Stock tracking and procurement</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Inventory module coming soon. Will include item catalog, stock movements, and low-stock alerts.</p>
+        <CardHeader><CardTitle>Inventory Items</CardTitle></CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Unit Price</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((item: any) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.unitPrice ? `$${item.unitPrice}` : "-"}</TableCell>
+                  <TableCell>{item.location || "-"}</TableCell>
+                  <TableCell>
+                    {item.quantity <= item.minStock ? (
+                      <Badge variant="destructive">Low Stock</Badge>
+                    ) : (
+                      <Badge variant="default">In Stock</Badge>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {items.length === 0 && !loading && (
+                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No items found</TableCell></TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

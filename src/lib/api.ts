@@ -314,3 +314,84 @@ export const notificationsApi = {
   deleteNotice: (id: string) =>
     request(`/notifications/notices/${id}`, { method: "DELETE" }),
 };
+
+export const libraryApi = {
+  list: (params?: { page?: number; search?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.page) p.set("page", String(params.page));
+    if (params?.search) p.set("search", params.search);
+    return request<{ books: any[]; total: number }>(`/library/books?${p.toString()}`);
+  },
+  get: (id: string) => request<any>(`/library/books/${id}`),
+  create: (data: any) => request<any>("/library/books", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) => request<any>(`/library/books/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) => request(`/library/books/${id}`, { method: "DELETE" }),
+  issue: (data: any) => request<any>("/library/issue", { method: "POST", body: JSON.stringify(data) }),
+  return: (issueId: string, data: any) => request<any>(`/library/return/${issueId}`, { method: "POST", body: JSON.stringify(data) }),
+  issued: () => request<any[]>("/library/issued"),
+};
+
+export const transportApi = {
+  routes: () => request<any[]>("/transport/routes"),
+  getRoute: (id: string) => request<any>(`/transport/routes/${id}`),
+  createRoute: (data: any) => request<any>("/transport/routes", { method: "POST", body: JSON.stringify(data) }),
+  updateRoute: (id: string, data: any) => request<any>(`/transport/routes/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteRoute: (id: string) => request(`/transport/routes/${id}`, { method: "DELETE" }),
+  assign: (data: any) => request<any>("/transport/assign", { method: "POST", body: JSON.stringify(data) }),
+  unassign: (studentId: string) => request(`/transport/unassign/${studentId}`, { method: "DELETE" }),
+};
+
+export const hostelApi = {
+  list: () => request<any[]>("/hostel"),
+  get: (id: string) => request<any>(`/hostel/${id}`),
+  create: (data: any) => request<any>("/hostel", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) => request<any>(`/hostel/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) => request(`/hostel/${id}`, { method: "DELETE" }),
+  rooms: (hostelId?: string) => {
+    const p = hostelId ? `?hostelId=${hostelId}` : "";
+    return request<any[]>(`/hostel/rooms${p}`);
+  },
+  createRoom: (data: any) => request<any>("/hostel/rooms", { method: "POST", body: JSON.stringify(data) }),
+  assign: (data: any) => request<any>("/hostel/assign", { method: "POST", body: JSON.stringify(data) }),
+  unassign: (allocationId: string) => request(`/hostel/unassign/${allocationId}`, { method: "DELETE" }),
+};
+
+export const inventoryApi = {
+  list: (params?: { page?: number; category?: string; search?: string }) => {
+    const p = new URLSearchParams();
+    if (params?.page) p.set("page", String(params.page));
+    if (params?.category) p.set("category", params.category);
+    if (params?.search) p.set("search", params.search);
+    return request<{ items: any[]; total: number }>(`/inventory?${p.toString()}`);
+  },
+  get: (id: string) => request<any>(`/inventory/${id}`),
+  create: (data: any) => request<any>("/inventory", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) => request<any>(`/inventory/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) => request(`/inventory/${id}`, { method: "DELETE" }),
+  movement: (id: string, data: any) => request<any>(`/inventory/${id}/movements`, { method: "POST", body: JSON.stringify(data) }),
+  categories: () => request<any[]>("/inventory/categories"),
+  lowStock: () => request<any[]>("/inventory/low-stock"),
+};
+
+export const lmsApi = {
+  courses: (params?: { page?: number }) => {
+    const p = new URLSearchParams();
+    if (params?.page) p.set("page", String(params.page));
+    return request<{ courses: any[]; total: number }>(`/lms/courses?${p.toString()}`);
+  },
+  getCourse: (id: string) => request<any>(`/lms/courses/${id}`),
+  createCourse: (data: any) => request<any>("/lms/courses", { method: "POST", body: JSON.stringify(data) }),
+  updateCourse: (id: string, data: any) => request<any>(`/lms/courses/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteCourse: (id: string) => request(`/lms/courses/${id}`, { method: "DELETE" }),
+  addModule: (courseId: string, data: any) => request<any>(`/lms/courses/${courseId}/modules`, { method: "POST", body: JSON.stringify(data) }),
+  addLesson: (moduleId: string, data: any) => request<any>(`/lms/modules/${moduleId}/lessons`, { method: "POST", body: JSON.stringify(data) }),
+  assignments: (classId?: string) => {
+    const p = classId ? `?classId=${classId}` : "";
+    return request<any[]>(`/lms/assignments${p}`);
+  },
+  createAssignment: (data: any) => request<any>("/lms/assignments", { method: "POST", body: JSON.stringify(data) }),
+  submitAssignment: (assignmentId: string, data: any) =>
+    request<any>(`/lms/assignments/${assignmentId}/submit`, { method: "POST", body: JSON.stringify(data) }),
+  gradeSubmission: (submissionId: string, data: any) =>
+    request<any>(`/lms/submissions/${submissionId}/grade`, { method: "POST", body: JSON.stringify(data) }),
+};
