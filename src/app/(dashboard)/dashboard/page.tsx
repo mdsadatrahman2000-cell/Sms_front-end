@@ -1,55 +1,89 @@
 "use client"
 
+import * as React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GraduationCap, Users, BookOpen, DollarSign, TrendingUp, AlertTriangle } from "lucide-react"
-
-const stats = [
-  {
-    title: "Total Students",
-    value: "1,234",
-    description: "+12% from last month",
-    icon: GraduationCap,
-    trend: "up",
-  },
-  {
-    title: "Total Teachers",
-    value: "56",
-    description: "+2 new this month",
-    icon: Users,
-    trend: "up",
-  },
-  {
-    title: "Active Courses",
-    value: "48",
-    description: "12 departments",
-    icon: BookOpen,
-    trend: "up",
-  },
-  {
-    title: "Fee Collection",
-    value: "$124,500",
-    description: "85% collected",
-    icon: DollarSign,
-    trend: "up",
-  },
-]
-
-const recentActivities = [
-  { title: "New student enrolled", time: "2 minutes ago", type: "success" },
-  { title: "Exam results published", time: "15 minutes ago", type: "info" },
-  { title: "Fee payment received", time: "1 hour ago", type: "success" },
-  { title: "Low attendance alert", time: "2 hours ago", type: "warning" },
-  { title: "Teacher leave request", time: "3 hours ago", type: "info" },
-]
-
-const upcomingEvents = [
-  { title: "Parent-Teacher Meeting", date: "Jul 20, 2026", type: "meeting" },
-  { title: "Mid-term Examinations", date: "Aug 1-15, 2026", type: "exam" },
-  { title: "Annual Day Celebration", date: "Aug 25, 2026", type: "event" },
-  { title: "Independence Day Holiday", date: "Aug 15, 2026", type: "holiday" },
-]
+import { Badge } from "@/components/ui/badge"
+import { GraduationCap, Users, BookOpen, DollarSign, TrendingUp, AlertTriangle, Clock, FileText } from "lucide-react"
+import { dashboardApi } from "@/lib/api"
 
 export default function DashboardPage() {
+  const [stats, setStats] = React.useState<any>(null)
+  const [recentActivity, setRecentActivity] = React.useState<any[]>([])
+  const [upcomingEvents, setUpcomingEvents] = React.useState<any[]>([])
+  const [loading, setLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    Promise.all([
+      dashboardApi.stats(),
+      dashboardApi.recentActivity(),
+      dashboardApi.upcomingEvents(),
+    ]).then(([statsRes, activityRes, eventsRes]) => {
+      if (statsRes.data) setStats(statsRes.data)
+      if (activityRes.data) setRecentActivity(activityRes.data as any[])
+      if (eventsRes.data) setUpcomingEvents(eventsRes.data as any[])
+      setLoading(false)
+    })
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted-foreground">Loading dashboard...</p>
+      </div>
+    )
+  }
+
+  const statCards = [
+    {
+      title: "Total Students",
+      value: stats?.totalStudents || 0,
+      icon: GraduationCap,
+      color: "text-blue-500",
+    },
+    {
+      title: "Total Teachers",
+      value: stats?.totalTeachers || 0,
+      icon: Users,
+      color: "text-green-500",
+    },
+    {
+      title: "Total Classes",
+      value: stats?.totalClasses || 0,
+      icon: BookOpen,
+      color: "text-purple-500",
+    },
+    {
+      title: "Total Revenue",
+      value: `$${(stats?.totalRevenue || 0).toLocaleString()}`,
+      icon: DollarSign,
+      color: "text-emerald-500",
+    },
+    {
+      title: "Pending Fees",
+      value: `$${(stats?.pendingFees || 0).toLocaleString()}`,
+      icon: AlertTriangle,
+      color: "text-orange-500",
+    },
+    {
+      title: "Documents",
+      value: stats?.totalDocuments || 0,
+      icon: FileText,
+      color: "text-cyan-500",
+    },
+    {
+      title: "Guardians",
+      value: stats?.totalGuardians || 0,
+      icon: Users,
+      color: "text-pink-500",
+    },
+    {
+      title: "Subjects",
+      value: stats?.totalSubjects || 0,
+      icon: BookOpen,
+      color: "text-indigo-500",
+    },
+  ]
+
   return (
     <div className="space-y-6">
       <div>
@@ -60,81 +94,116 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
+        {statCards.slice(0, 4).map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className={`h-4 w-4 ${stat.color}`} />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                {stat.description}
-              </p>
             </CardContent>
           </Card>
         ))}
       </div>
 
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {statCards.slice(4).map((stat) => (
+          <Card key={stat.title}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {stats?.attendanceToday && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Today&apos;s Attendance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-6">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-green-500" />
+                <span className="text-sm">Present: {stats.attendanceToday.present}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500" />
+                <span className="text-sm">Absent: {stats.attendanceToday.absent}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                <span className="text-sm">Late: {stats.attendanceToday.late}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Recent Activities</CardTitle>
-            <CardDescription>
-              Latest activities across the school
-            </CardDescription>
+            <CardDescription>Latest activities across the school</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between border-b pb-2 last:border-0"
-                >
-                  <div className="flex items-center gap-2">
-                    {activity.type === "warning" ? (
-                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                    ) : activity.type === "success" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingUp className="h-4 w-4 text-blue-500" />
-                    )}
-                    <span className="text-sm">{activity.title}</span>
+            {recentActivity.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No recent activities</p>
+            ) : (
+              <div className="space-y-4">
+                {recentActivity.map((activity: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2 last:border-0">
+                    <div className="flex items-center gap-2">
+                      {activity.type === "enrollment" ? (
+                        <GraduationCap className="h-4 w-4 text-blue-500" />
+                      ) : activity.type === "teacher" ? (
+                        <Users className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <DollarSign className="h-4 w-4 text-emerald-500" />
+                      )}
+                      <span className="text-sm">{activity.title}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(activity.date).toLocaleDateString()}
+                    </span>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    {activity.time}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Upcoming Events</CardTitle>
-            <CardDescription>
-              Events scheduled for the next few weeks
-            </CardDescription>
+            <CardTitle>Upcoming Exams</CardTitle>
+            <CardDescription>Scheduled examinations</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {upcomingEvents.map((event, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between border-b pb-2 last:border-0"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{event.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {event.date}
-                    </p>
+            {upcomingEvents.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No upcoming exams</p>
+            ) : (
+              <div className="space-y-4">
+                {upcomingEvents.map((event: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2 last:border-0">
+                    <div>
+                      <p className="text-sm font-medium">{event.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {event.class?.name} - {event.subject?.name}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs">{new Date(event.startDate).toLocaleDateString()}</p>
+                      <Badge variant="outline" className="text-xs">{event.totalMarks} marks</Badge>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

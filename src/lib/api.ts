@@ -214,3 +214,21 @@ export const uploadApi = {
 
   delete: (id: string) => request(`/upload/${id}`, { method: "DELETE" }),
 };
+
+export const dashboardApi = {
+  stats: () => request<any>("/dashboard/stats"),
+  recentActivity: () => request<any[]>("/dashboard/recent-activity"),
+  upcomingEvents: () => request<any[]>("/dashboard/upcoming-events"),
+};
+
+export const rolesApi = {
+  list: () => request<any[]>("/roles"),
+  get: (id: string) => request<any>(`/roles/${id}`),
+  create: (data: any) =>
+    request<any>("/roles", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    request<any>(`/roles/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    request(`/roles/${id}`, { method: "DELETE" }),
+  permissions: () => request<any>("/roles/permissions"),
+};
