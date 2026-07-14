@@ -6,18 +6,29 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { transportApi } from "@/lib/api"
-import { Plus, Bus, Users } from "lucide-react"
+import Link from "next/link"
+import { Plus, Bus, Users, Pencil, Trash2 } from "lucide-react"
 
 export default function TransportPage() {
   const [routes, setRoutes] = React.useState<any[]>([])
   const [loading, setLoading] = React.useState(true)
 
-  React.useEffect(() => {
+  const fetchRoutes = React.useCallback(() => {
     transportApi.routes().then((res) => {
       if (res.data) setRoutes(res.data as any[])
       setLoading(false)
     })
   }, [])
+
+  React.useEffect(() => {
+    fetchRoutes()
+  }, [fetchRoutes])
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this route?")) return
+    await transportApi.deleteRoute(id)
+    fetchRoutes()
+  }
 
   return (
     <div className="space-y-6">
@@ -51,6 +62,7 @@ export default function TransportPage() {
                 <TableHead>Stops</TableHead>
                 <TableHead>Students</TableHead>
                 <TableHead>Monthly Fee</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -62,10 +74,18 @@ export default function TransportPage() {
                   <TableCell>{r.stops?.length || 0} stops</TableCell>
                   <TableCell><Badge variant="outline"><Users className="h-3 w-3 mr-1" /> {r._count?.students || 0}</Badge></TableCell>
                   <TableCell>{r.monthlyFee ? `$${r.monthlyFee}` : "-"}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Link href={`/transport/${r.id}/edit`}>
+                        <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+                      </Link>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(r.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {routes.length === 0 && !loading && (
-                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No routes found</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No routes found</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

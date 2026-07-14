@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { examsApi } from "@/lib/api"
-import { Plus, Eye, Trash2 } from "lucide-react"
+import { Plus, Eye, Trash2, Pencil } from "lucide-react"
 import Link from "next/link"
 
 export default function ExamsPage() {
@@ -19,6 +19,13 @@ export default function ExamsPage() {
       setLoading(false)
     })
   }, [])
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Delete this exam?")) return
+    await examsApi.delete(id)
+    const res = await examsApi.list()
+    if (res.data) setExams((res.data as any).exams || [])
+  }
 
   const typeBadge = (type: string) => {
     const variants: Record<string, string> = {
@@ -62,6 +69,7 @@ export default function ExamsPage() {
                 <TableHead>Dates</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Students</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,11 +85,19 @@ export default function ExamsPage() {
                   </TableCell>
                   <TableCell>{statusBadge(exam.status)}</TableCell>
                   <TableCell>{exam._count?.marks || 0}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Link href={`/exams/${exam.id}/edit`}>
+                        <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+                      </Link>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(exam.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {exams.length === 0 && !loading && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                     No exams found. Create your first exam to get started.
                   </TableCell>
                 </TableRow>

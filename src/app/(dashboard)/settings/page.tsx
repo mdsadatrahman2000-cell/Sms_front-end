@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = React.useState<"profile" | "academic" | "notifications" | "security">("profile")
+  const [activeTab, setActiveTab] = React.useState<"profile" | "notifications" | "security">("profile")
   const [saved, setSaved] = React.useState(false)
 
   const [profile, setProfile] = React.useState({
@@ -16,20 +16,12 @@ export default function SettingsPage() {
     email: "admin@springfield.edu",
     phone: "+1 (555) 123-4567",
     address: "123 Education Lane, Springfield, IL 62701",
-    website: "https://springfield.edu",
-  })
-
-  const [academic, setAcademic] = React.useState({
-    currentYear: "2025-2026",
-    timezone: "America/Chicago",
-    language: "en",
   })
 
   const [notifications, setNotifications] = React.useState({
     emailNotifications: true,
-    studentUpdates: true,
-    attendanceAlerts: true,
-    gradePublishing: false,
+    smsNotifications: false,
+    pushNotifications: true,
   })
 
   const [passwords, setPasswords] = React.useState({
@@ -40,7 +32,6 @@ export default function SettingsPage() {
 
   const tabs = [
     { key: "profile" as const, label: "School Profile" },
-    { key: "academic" as const, label: "Academic" },
     { key: "notifications" as const, label: "Notifications" },
     { key: "security" as const, label: "Security" },
   ]
@@ -108,15 +99,6 @@ export default function SettingsPage() {
                   onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  type="url"
-                  value={profile.website}
-                  onChange={(e) => setProfile({ ...profile, website: e.target.value })}
-                />
-              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="address">Address</Label>
@@ -126,48 +108,13 @@ export default function SettingsPage() {
                 onChange={(e) => setProfile({ ...profile, address: e.target.value })}
               />
             </div>
-            <div className="flex justify-end">
-              <Button onClick={handleSave}>
-                {saved ? "Saved!" : "Save Changes"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {activeTab === "academic" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Academic Settings</CardTitle>
-            <CardDescription>
-              Configure academic year, timezone, and language preferences
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Current Academic Year</Label>
-                <Input value={academic.currentYear} disabled />
-                <p className="text-xs text-muted-foreground">
-                  To change the academic year, go to Academic Years page
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="timezone">Timezone</Label>
-                <Input
-                  id="timezone"
-                  value={academic.timezone}
-                  onChange={(e) => setAcademic({ ...academic, timezone: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="language">Language</Label>
-                <Input
-                  id="language"
-                  value={academic.language}
-                  onChange={(e) => setAcademic({ ...academic, language: e.target.value })}
-                  placeholder="e.g. en, fr, es"
-                />
+            <div className="space-y-2">
+              <Label>School Logo</Label>
+              <div className="flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg bg-muted/50 hover:bg-muted/80 cursor-pointer transition-colors">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG up to 2MB</p>
+                </div>
               </div>
             </div>
             <div className="flex justify-end">
@@ -190,10 +137,9 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="space-y-3">
               {[
-                { key: "emailNotifications" as const, label: "Email Notifications", desc: "Enable or disable all email notifications" },
-                { key: "studentUpdates" as const, label: "Student Updates", desc: "Get notified about student record changes" },
-                { key: "attendanceAlerts" as const, label: "Attendance Alerts", desc: "Receive alerts for absent students" },
-                { key: "gradePublishing" as const, label: "Grade Publishing", desc: "Notify parents when grades are published" },
+                { key: "emailNotifications" as const, label: "Email Notifications", desc: "Receive notifications via email" },
+                { key: "smsNotifications" as const, label: "SMS Notifications", desc: "Receive notifications via SMS" },
+                { key: "pushNotifications" as const, label: "Push Notifications", desc: "Receive push notifications in browser" },
               ].map((item) => (
                 <div key={item.key} className="flex items-center justify-between rounded-md border p-3">
                   <div>

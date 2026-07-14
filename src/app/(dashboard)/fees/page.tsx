@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { feesApi } from "@/lib/api"
-import { DollarSign, Plus, CheckCircle, AlertCircle } from "lucide-react"
+import { DollarSign, Plus, CheckCircle, AlertCircle, Trash2 } from "lucide-react"
 import Link from "next/link"
 
 export default function FeesPage() {
@@ -27,6 +27,14 @@ export default function FeesPage() {
       case "paid": return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" /> Paid</Badge>
       case "partial": return <Badge className="bg-yellow-100 text-yellow-800"><AlertCircle className="h-3 w-3 mr-1" /> Partial</Badge>
       default: return <Badge variant="destructive"><AlertCircle className="h-3 w-3 mr-1" /> Unpaid</Badge>
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this invoice?")) return
+    const res = await feesApi.deleteInvoice(id)
+    if (!res.error) {
+      setInvoices((prev) => prev.filter((inv) => inv.id !== id))
     }
   }
 
@@ -76,6 +84,7 @@ export default function FeesPage() {
                 <TableHead>Paid</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -88,11 +97,16 @@ export default function FeesPage() {
                   <TableCell>${Number(inv.paidAmount).toLocaleString()}</TableCell>
                   <TableCell>{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "-"}</TableCell>
                   <TableCell>{statusBadge(inv.status)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(inv.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
               {invoices.length === 0 && !loading && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                     No invoices found
                   </TableCell>
                 </TableRow>

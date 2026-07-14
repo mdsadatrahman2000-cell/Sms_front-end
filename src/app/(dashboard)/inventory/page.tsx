@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { inventoryApi } from "@/lib/api"
-import { Plus, Package, AlertTriangle } from "lucide-react"
+import Link from "next/link"
+import { Plus, Package, AlertTriangle, Pencil, Trash2 } from "lucide-react"
 
 export default function InventoryPage() {
   const [items, setItems] = React.useState<any[]>([])
@@ -15,13 +16,23 @@ export default function InventoryPage() {
   const [search, setSearch] = React.useState("")
   const [loading, setLoading] = React.useState(true)
 
-  React.useEffect(() => {
+  const fetchItems = React.useCallback(() => {
     Promise.all([inventoryApi.list(), inventoryApi.lowStock()]).then(([itemsRes, lowRes]) => {
       if (itemsRes.data) setItems((itemsRes.data as any).items || [])
       if (lowRes.data) setLowStock(lowRes.data as any[])
       setLoading(false)
     })
   }, [])
+
+  React.useEffect(() => {
+    fetchItems()
+  }, [fetchItems])
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return
+    await inventoryApi.delete(id)
+    fetchItems()
+  }
 
   return (
     <div className="space-y-6">
@@ -62,6 +73,7 @@ export default function InventoryPage() {
                 <TableHead>Unit Price</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,10 +91,18 @@ export default function InventoryPage() {
                       <Badge variant="default">In Stock</Badge>
                     )}
                   </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Link href={`/inventory/${item.id}/edit`}>
+                        <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+                      </Link>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {items.length === 0 && !loading && (
-                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No items found</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No items found</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

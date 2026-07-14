@@ -290,6 +290,7 @@ export const feesApi = {
   recordPayment: (data: any) =>
     request<any>("/fees/payments", { method: "POST", body: JSON.stringify(data) }),
   revenue: () => request<{ collected: number; pending: number }>("/fees/revenue"),
+  deleteInvoice: (id: string) => request(`/fees/invoices/${id}`, { method: "DELETE" }),
 };
 
 export const hrApi = {
