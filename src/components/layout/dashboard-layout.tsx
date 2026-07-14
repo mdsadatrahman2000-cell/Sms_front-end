@@ -1,0 +1,156 @@
+"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import {
+  LayoutDashboard,
+  Users,
+  GraduationCap,
+  BookOpen,
+  Calendar,
+  ClipboardList,
+  Settings,
+  LogOut,
+  Bell,
+  Search,
+  Menu,
+  ChevronDown,
+  School,
+} from "lucide-react"
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarItem,
+  SidebarGroup,
+  SidebarGroupLabel,
+} from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+
+const navigation = [
+  {
+    group: "Main",
+    items: [
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Students", href: "/students", icon: GraduationCap },
+      { label: "Teachers", href: "/teachers", icon: Users },
+      { label: "Classes", href: "/classes", icon: School },
+      { label: "Subjects", href: "/subjects", icon: BookOpen },
+    ],
+  },
+  {
+    group: "Academic",
+    items: [
+      { label: "Attendance", href: "/attendance", icon: ClipboardList },
+      { label: "Exams", href: "/exams", icon: ClipboardList },
+      { label: "Timetable", href: "/timetable", icon: Calendar },
+    ],
+  },
+  {
+    group: "System",
+    items: [
+      { label: "Settings", href: "/settings", icon: Settings },
+    ],
+  },
+]
+
+interface DashboardLayoutProps {
+  children: React.ReactNode
+}
+
+export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = React.useState(true)
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300`}>
+        <SidebarHeader>
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <School className="h-5 w-5" />
+            </div>
+            {sidebarOpen && (
+              <span className="text-lg font-bold">School ERP</span>
+            )}
+          </div>
+        </SidebarHeader>
+
+        <SidebarContent>
+          {navigation.map((group) => (
+            <SidebarGroup key={group.group}>
+              {sidebarOpen && (
+                <SidebarGroupLabel>{group.group}</SidebarGroupLabel>
+              )}
+              {group.items.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  <SidebarItem
+                    icon={<item.icon className="h-4 w-4" />}
+                    active={pathname === item.href}
+                  >
+                    {sidebarOpen && item.label}
+                  </SidebarItem>
+                </Link>
+              ))}
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+
+        <SidebarFooter>
+          <SidebarItem icon={<LogOut className="h-4 w-4" />}>
+            {sidebarOpen && "Logout"}
+          </SidebarItem>
+        </SidebarFooter>
+      </Sidebar>
+
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <header className="flex h-14 items-center justify-between border-b bg-background px-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="w-64 pl-8"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon">
+              <Bell className="h-5 w-5" />
+            </Button>
+            <Separator orientation="vertical" className="h-6" />
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/avatars/admin.png" alt="Admin" />
+                <AvatarFallback>AD</AvatarFallback>
+              </Avatar>
+              <div className="text-sm">
+                <p className="font-medium">Admin User</p>
+                <p className="text-muted-foreground">Super Admin</p>
+              </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-auto p-6">
+          {children}
+        </main>
+      </div>
+    </div>
+  )
+}
