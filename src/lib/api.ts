@@ -126,3 +126,50 @@ export const subjectsApi = {
   delete: (id: string) =>
     request(`/subjects/${id}`, { method: "DELETE" }),
 };
+
+export const tenantsApi = {
+  list: () => request<any[]>("/tenants"),
+  get: (id: string) => request<any>(`/tenants/${id}`),
+  create: (data: any) =>
+    request<any>("/tenants", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    request<any>(`/tenants/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    request(`/tenants/${id}`, { method: "DELETE" }),
+};
+
+export const academicYearsApi = {
+  list: () => request<any[]>("/academic-years"),
+  get: (id: string) => request<any>(`/academic-years/${id}`),
+  create: (data: any) =>
+    request<any>("/academic-years", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    request<any>(`/academic-years/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    request(`/academic-years/${id}`, { method: "DELETE" }),
+  setCurrent: (id: string) =>
+    request<any>(`/academic-years/${id}/set-current`, { method: "POST" }),
+};
+
+export const guardiansApi = {
+  list: (params?: { page?: number; limit?: number; search?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set("page", String(params.page));
+    if (params?.limit) searchParams.set("limit", String(params.limit));
+    if (params?.search) searchParams.set("search", params.search);
+    return request<{ guardians: any[]; total: number; page: number; limit: number; totalPages: number }>(
+      `/guardians?${searchParams.toString()}`
+    );
+  },
+  get: (id: string) => request<any>(`/guardians/${id}`),
+  create: (data: any) =>
+    request<any>("/guardians", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) =>
+    request<any>(`/guardians/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    request(`/guardians/${id}`, { method: "DELETE" }),
+  linkStudent: (guardianId: string, studentId: string) =>
+    request<any>(`/guardians/${guardianId}/link/${studentId}`, { method: "POST" }),
+  unlinkStudent: (guardianId: string, studentId: string) =>
+    request(`/guardians/${guardianId}/unlink/${studentId}`, { method: "DELETE" }),
+};

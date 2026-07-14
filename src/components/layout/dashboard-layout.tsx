@@ -41,11 +41,13 @@ const navigation = [
       { label: "Teachers", href: "/teachers", icon: Users },
       { label: "Classes", href: "/classes", icon: School },
       { label: "Subjects", href: "/subjects", icon: BookOpen },
+      { label: "Guardians", href: "/guardians", icon: Users },
     ],
   },
   {
     group: "Academic",
     items: [
+      { label: "Academic Years", href: "/academic-years", icon: Calendar },
       { label: "Attendance", href: "/attendance", icon: ClipboardList },
       { label: "Exams", href: "/exams", icon: ClipboardList },
       { label: "Timetable", href: "/timetable", icon: Calendar },
@@ -54,6 +56,7 @@ const navigation = [
   {
     group: "System",
     items: [
+      { label: "Tenants", href: "/tenants", icon: School },
       { label: "Settings", href: "/settings", icon: Settings },
     ],
   },
