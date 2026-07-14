@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { lmsApi } from "@/lib/api"
 import { Plus, BookOpen, Layers } from "lucide-react"
+import Link from "next/link"
 
 export default function LmsPage() {
   const [courses, setCourses] = React.useState<any[]>([])
@@ -26,7 +27,7 @@ export default function LmsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Learning Management</h1>
           <p className="text-muted-foreground">Manage courses, modules, lessons, and assignments</p>
         </div>
-        <Button><Plus className="h-4 w-4 mr-2" /> New Course</Button>
+        <Link href="/lms/new"><Button><Plus className="h-4 w-4 mr-2" /> New Course</Button></Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -60,7 +61,7 @@ export default function LmsPage() {
             <TableBody>
               {courses.map((c: any) => (
                 <TableRow key={c.id}>
-                  <TableCell className="font-medium">{c.title}</TableCell>
+                  <TableCell className="font-medium"><Link href={`/lms/${c.id}`} className="hover:underline">{c.title}</Link></TableCell>
                   <TableCell>{c.subject?.name || "-"}</TableCell>
                   <TableCell>{c.teacher?.firstName} {c.teacher?.lastName}</TableCell>
                   <TableCell><Badge variant="outline"><Layers className="h-3 w-3 mr-1" /> {c._count?.modules || 0}</Badge></TableCell>

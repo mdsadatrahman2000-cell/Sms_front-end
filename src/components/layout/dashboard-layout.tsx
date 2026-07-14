@@ -60,7 +60,9 @@ const navigation = [
     items: [
       { label: "Academic Years", href: "/academic-years", icon: Calendar },
       { label: "Attendance", href: "/attendances", icon: ClipboardList },
+      { label: "Attendance Analytics", href: "/attendances/analytics", icon: BarChart3 },
       { label: "Exams", href: "/exams", icon: ClipboardList },
+      { label: "Reports", href: "/reports", icon: BarChart3 },
       { label: "LMS", href: "/lms", icon: BookOpen },
       { label: "Timetable", href: "/timetable", icon: Calendar },
       { label: "Notices", href: "/notices", icon: Megaphone },
@@ -76,6 +78,9 @@ const navigation = [
     group: "Operations",
     items: [
       { label: "HR & Staff", href: "/hr", icon: Users },
+      { label: "Leaves", href: "/leaves", icon: ClipboardList },
+      { label: "Admissions", href: "/admissions", icon: GraduationCap },
+      { label: "Scholarships", href: "/scholarships", icon: DollarSign },
       { label: "Library", href: "/library", icon: BookOpen },
       { label: "Transport", href: "/transport", icon: Bus },
       { label: "Hostel", href: "/hostel", icon: Building },

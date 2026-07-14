@@ -53,7 +53,10 @@ export default function AttendancesPage() {
           <h1 className="text-3xl font-bold tracking-tight">Attendance</h1>
           <p className="text-muted-foreground">Track and manage student attendance</p>
         </div>
-        <Link href="/attendances/new"><Button><Plus className="h-4 w-4 mr-2" /> Mark Attendance</Button></Link>
+        <div className="flex gap-2">
+          <Link href="/attendances/analytics"><Button variant="outline">Analytics</Button></Link>
+          <Link href="/attendances/new"><Button><Plus className="h-4 w-4 mr-2" /> Mark Attendance</Button></Link>
+        </div>
       </div>
 
       <Card>

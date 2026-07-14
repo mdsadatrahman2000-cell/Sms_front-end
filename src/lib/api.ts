@@ -395,6 +395,11 @@ export const lmsApi = {
     request<any>(`/lms/assignments/${assignmentId}/submit`, { method: "POST", body: JSON.stringify(data) }),
   gradeSubmission: (submissionId: string, data: any) =>
     request<any>(`/lms/submissions/${submissionId}/grade`, { method: "POST", body: JSON.stringify(data) }),
+  updateModule: (moduleId: string, data: any) => request<any>(`/lms/modules/${moduleId}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteModule: (moduleId: string) => request(`/lms/modules/${moduleId}`, { method: "DELETE" }),
+  updateLesson: (lessonId: string, data: any) => request<any>(`/lms/lessons/${lessonId}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteLesson: (lessonId: string) => request(`/lms/lessons/${lessonId}`, { method: "DELETE" }),
+  getAssignment: (id: string) => request<any>(`/lms/assignments/${id}`),
 };
 
 export const timetableApi = {
@@ -406,4 +411,33 @@ export const timetableApi = {
   update: (id: string, data: any) => request<any>(`/timetable/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) => request(`/timetable/${id}`, { method: "DELETE" }),
   deleteByClass: (classId: string) => request(`/timetable/class/${classId}`, { method: "DELETE" }),
+};
+
+export const reportsApi = {
+  reportCard: (studentId: string) => request<any>(`/reports/report-card/${studentId}`),
+  classRankings: (classId: string) => request<any>(`/reports/class-rankings/${classId}`),
+  attendanceSummary: (studentId: string) => request<any>(`/reports/attendance-summary/${studentId}`),
+};
+
+export const leavesApi = {
+  list: () => request<any[]>("/leaves"),
+  apply: (data: any) => request<any>("/leaves", { method: "POST", body: JSON.stringify(data) }),
+  approve: (id: string) => request<any>(`/leaves/${id}/approve`, { method: "PATCH" }),
+  reject: (id: string) => request<any>(`/leaves/${id}/reject`, { method: "PATCH" }),
+};
+
+export const admissionsApi = {
+  list: (status?: string) => {
+    const p = status ? `?status=${status}` : "";
+    return request<any[]>(`/admissions${p}`);
+  },
+  create: (data: any) => request<any>("/admissions", { method: "POST", body: JSON.stringify(data) }),
+  updateStatus: (id: string, status: string) => request<any>(`/admissions/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) }),
+};
+
+export const scholarshipsApi = {
+  list: () => request<any[]>("/scholarships"),
+  create: (data: any) => request<any>("/scholarships", { method: "POST", body: JSON.stringify(data) }),
+  apply: (id: string, data: any) => request<any>(`/scholarships/${id}/apply`, { method: "POST", body: JSON.stringify(data) }),
+  unapply: (id: string, studentId: string) => request(`/scholarships/${id}/unapply/${studentId}`, { method: "DELETE" }),
 };
