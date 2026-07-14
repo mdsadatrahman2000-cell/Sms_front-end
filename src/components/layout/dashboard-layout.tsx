@@ -37,6 +37,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Input } from "@/components/ui/input"
 
 const navigation = [
@@ -107,7 +108,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300`}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-2 focus:bg-background focus:border">
+        Skip to main content
+      </a>
+
+      <Sidebar className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300 hidden md:block`}>
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -153,10 +158,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="hidden md:flex"
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
@@ -166,7 +172,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
             </Button>
@@ -176,7 +183,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <AvatarImage src="/avatars/admin.png" alt="Admin" />
                 <AvatarFallback>AD</AvatarFallback>
               </Avatar>
-              <div className="text-sm">
+              <div className="text-sm hidden sm:block">
                 <p className="font-medium">Admin User</p>
                 <p className="text-muted-foreground">Super Admin</p>
               </div>
@@ -185,7 +192,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6">
+        <main id="main-content" className="flex-1 overflow-auto p-6">
           {children}
         </main>
       </div>
