@@ -395,3 +395,14 @@ export const lmsApi = {
   gradeSubmission: (submissionId: string, data: any) =>
     request<any>(`/lms/submissions/${submissionId}/grade`, { method: "POST", body: JSON.stringify(data) }),
 };
+
+export const timetableApi = {
+  getByClass: (classId: string) => request<any[]>(`/timetable/class/${classId}`),
+  getByTeacher: (teacherId: string) => request<any[]>(`/timetable/teacher/${teacherId}`),
+  getMy: () => request<any[]>("/timetable/my"),
+  create: (data: any) => request<any>("/timetable", { method: "POST", body: JSON.stringify(data) }),
+  bulkCreate: (data: any) => request<any>("/timetable/bulk", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: any) => request<any>(`/timetable/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) => request(`/timetable/${id}`, { method: "DELETE" }),
+  deleteByClass: (classId: string) => request(`/timetable/class/${classId}`, { method: "DELETE" }),
+};

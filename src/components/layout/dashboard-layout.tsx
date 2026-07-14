@@ -44,6 +44,10 @@ const navigation = [
     group: "Main",
     items: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Principal View", href: "/dashboard/principal", icon: BarChart3 },
+      { label: "Teacher View", href: "/dashboard/teacher", icon: BarChart3 },
+      { label: "Student View", href: "/dashboard/student", icon: BarChart3 },
+      { label: "Parent View", href: "/dashboard/parent", icon: BarChart3 },
       { label: "Students", href: "/students", icon: GraduationCap },
       { label: "Teachers", href: "/teachers", icon: Users },
       { label: "Classes", href: "/classes", icon: School },
@@ -58,6 +62,7 @@ const navigation = [
       { label: "Attendance", href: "/attendances", icon: ClipboardList },
       { label: "Exams", href: "/exams", icon: ClipboardList },
       { label: "LMS", href: "/lms", icon: BookOpen },
+      { label: "Timetable", href: "/timetable", icon: Calendar },
       { label: "Notices", href: "/notices", icon: Megaphone },
     ],
   },
