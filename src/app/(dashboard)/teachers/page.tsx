@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Plus, Search, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -75,9 +76,11 @@ export default function TeachersPage() {
             Manage teacher information and assignments
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Teacher
+        <Button asChild>
+          <Link href="/teachers/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Teacher
+          </Link>
         </Button>
       </div>
 
@@ -156,13 +159,17 @@ export default function TeachersPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
+                            <DropdownMenuItem asChild>
+                              <Link href={`/teachers/${teacher.id}`}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                            <DropdownMenuItem asChild>
+                              <Link href={`/teachers/${teacher.id}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDelete(teacher.id)}

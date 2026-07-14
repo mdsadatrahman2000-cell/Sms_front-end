@@ -86,9 +86,11 @@ export default function StudentsPage() {
             Manage student information and records
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Student
+        <Button asChild>
+          <Link href="/students/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Student
+          </Link>
         </Button>
       </div>
 
@@ -180,9 +182,11 @@ export default function StudentsPage() {
                                 View
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                            <DropdownMenuItem asChild>
+                              <Link href={`/students/${student.id}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDelete(student.id)}

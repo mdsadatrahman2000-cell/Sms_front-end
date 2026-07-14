@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Plus, MoreHorizontal, Eye, Edit, Trash2, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -74,9 +75,11 @@ export default function ClassesPage() {
             Manage classes and sections
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Class
+        <Button asChild>
+          <Link href="/classes/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Class
+          </Link>
         </Button>
       </div>
 
@@ -149,13 +152,17 @@ export default function ClassesPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
+                            <DropdownMenuItem asChild>
+                              <Link href={`/classes/${cls.id}`}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                            <DropdownMenuItem asChild>
+                              <Link href={`/classes/${cls.id}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDelete(cls.id)}

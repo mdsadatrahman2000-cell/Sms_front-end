@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Plus, MoreHorizontal, Edit, Trash2, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -66,9 +67,11 @@ export default function SubjectsPage() {
             Manage subjects and course offerings
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Subject
+        <Button asChild>
+          <Link href="/subjects/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Subject
+          </Link>
         </Button>
       </div>
 
@@ -181,9 +184,11 @@ export default function SubjectsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
+                            <DropdownMenuItem asChild>
+                              <Link href={`/subjects/${subject.id}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDelete(subject.id)}
